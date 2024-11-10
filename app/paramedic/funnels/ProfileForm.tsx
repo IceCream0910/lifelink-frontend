@@ -1,27 +1,65 @@
-import { FunnelProps } from "./funnelTypes";
-import { profile } from "../context";
-import IonIcon from '@reacticons/ionicons';
+import { useState, useEffect, useRef } from "react";
 import Spacer from "../../components/spacer";
+import IonIcon from '@reacticons/ionicons';
 import toast from 'react-hot-toast';
 
-export default function ProfileInput({ context, history }: FunnelProps<Partial<profile>>) {
+export default function ProfileForm({ context, history, location, setLocation }) {
+    const [patientId, setPatientId] = useState<number | null>(null);
+    const nameInputRef = useRef<HTMLInputElement>(null);
+
+    const handleNameChange = (context, history) => {
+        if (nameInputRef.current) {
+            const inputValue = nameInputRef.current.value;
+            const normalizedValue = inputValue.normalize("NFC");
+            history.replace("인적사항입력", { ...context, name: normalizedValue });
+        }
+    };
+
+    const generatePatientId = () => {
+        const newId = Math.floor(10000000 + Math.random() * 90000000);
+        setPatientId(newId);
+        return newId;
+    };
+
+
+    const getCurrentLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    const locationString = `POINT(${longitude} ${latitude})`;
+                    console.log('Location:', locationString);
+                    setLocation(locationString);
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                }
+            );
+        } else {
+            console.error('Geolocation is not supported by this browser.');
+        }
+    };
+
+    useEffect(() => {
+        if (location) {
+            context.location = location
+        }
+    }, [location]);
+
+
     return (
         <main>
             <h2>환자 등록</h2>
             <span>병원에 공유하기 위한 환자의 정보를 입력해주세요.</span>
-            <Spacer y={10} />
-            <span style={{ opacity: .5, fontSize: '14px' }}>
-                <IonIcon className="icon" name="alert-circle-outline" />
-                &nbsp;인적사항을 확인할 수 없는 경우 빈칸으로 유지
-            </span>
             <Spacer y={30} />
 
             <div style={{ display: "flex", flexDirection: "column" }}>
                 <label>이름</label>
                 <input
                     type="text"
-                    value={context.name || ''}
-                    onChange={(e) => history.replace("인적사항입력", { ...context, name: e.target.value })}
+                    ref={nameInputRef}
+                    defaultValue={context.name || ''}
+                    onChange={() => handleNameChange(context, history)}
                     autoComplete="off"
                 />
 
@@ -70,11 +108,14 @@ export default function ProfileInput({ context, history }: FunnelProps<Partial<p
                 </div>
             </div>
 
+
             <button
                 className="bottom"
                 onClick={() => {
-                    if (context.age && context.gender && context.citizenship) {
-                        history.push("증상입력", context);
+                    if (context.age && context.gender && context.citizenship) { // 필수값
+                        const id = patientId || generatePatientId();
+                        history.push("증상입력", { ...context, id });
+                        getCurrentLocation();
                     } else {
                         toast.error("필수 항목을 모두 입력해주세요.");
                     }
@@ -83,5 +124,5 @@ export default function ProfileInput({ context, history }: FunnelProps<Partial<p
                 확인
             </button>
         </main>
-    );
+    )
 }
