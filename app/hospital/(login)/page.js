@@ -39,7 +39,7 @@ export default function Page() {
                 {hospital && hospital.map((h, index) => (
                     <button className="option" style={{ margin: "5px" }} key={index} onClick={() => {
                         localStorage.setItem('selectedHospital', h.id)
-                        router.push('/hospital/dashboard');
+                        router.push('/hospital/dashboard/' + h.id);
                     }}>
                         {h.name}
                     </button>

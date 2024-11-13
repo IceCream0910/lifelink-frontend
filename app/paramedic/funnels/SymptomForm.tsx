@@ -141,7 +141,7 @@ export default function SymptomForm({ context, history, setHospitals, location, 
                             key={category}
                             onClick={() => {
                                 setSelection({ category, subcategory: '', symptom: null });
-                                setOpenSheet(null);
+                                setOpenSheet('subcategory')
                             }}
                             style={{ display: 'block', width: '100%', padding: '10px', margin: '5px 0' }}
                         >
@@ -162,7 +162,7 @@ export default function SymptomForm({ context, history, setHospitals, location, 
                             key={subcategory}
                             onClick={() => {
                                 setSelection(prev => ({ ...prev, subcategory, symptom: null }));
-                                setOpenSheet(null);
+                                setOpenSheet('symptom');
                             }}
                             style={{ display: 'block', width: '100%', padding: '10px', margin: '5px 0' }}
                         >

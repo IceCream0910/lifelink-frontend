@@ -33,7 +33,9 @@ type finding = preKtas
 
 type complete = finding & {
     hospitalId: string;
-    matchedAt: Date;
+    hospitalName: string;
+    hospitalLat: number;
+    hospitalLong: number;
 }
 
 export type { profile, preKtas, finding, complete, KtasSymptom };
