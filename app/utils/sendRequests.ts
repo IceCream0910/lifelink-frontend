@@ -1,7 +1,7 @@
-import { preKtas } from "../context";
+import { preKtas } from "../paramedic/manual/context";
 
 export default async function sendRequests(data: preKtas) {
-    const response = await fetch('http://localhost:4000/patient/sendRequests/' + data.id, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/patient/sendRequests/${data.id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

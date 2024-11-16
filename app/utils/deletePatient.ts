@@ -1,5 +1,5 @@
 export default async function deletePatient(id?: string) {
-    const response = await fetch(`http://localhost:4000/patient/${id ? id : ''}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/patient/${id ? id : ''}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',

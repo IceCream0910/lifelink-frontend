@@ -1,5 +1,5 @@
 export default async function getHospital(id?: string) {
-    const response = await fetch(`http://localhost:4000/hospital/${id ? id : ''}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/hospital/${id ? id : ''}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

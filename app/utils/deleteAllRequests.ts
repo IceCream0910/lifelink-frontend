@@ -1,5 +1,5 @@
 export default async function deleteAllRequests(id?: string, type?: string) {
-    const response = await fetch(`http://localhost:4000/request/all/${id ? id : ''}?type=${type}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/request/all/${id ? id : ''}?type=${type}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',

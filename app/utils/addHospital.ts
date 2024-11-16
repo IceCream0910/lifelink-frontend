@@ -1,7 +1,7 @@
 import { Hospital } from './types';
 
 export default async function getHospital(data: Hospital) {
-    const response = await fetch(`http://localhost:4000/hospital`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/hospital`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

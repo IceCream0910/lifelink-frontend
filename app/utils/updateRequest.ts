@@ -1,7 +1,7 @@
 import { Request } from './types';
 
 export default async function updateRequest(data: Request) {
-    const response = await fetch(`http://localhost:4000/request/${data.id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/request/${data.id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
