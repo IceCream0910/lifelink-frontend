@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import Spacer from "../../components/spacer";
+import Spacer from "../../../components/spacer";
 import IonIcon from '@reacticons/ionicons';
 import toast from 'react-hot-toast';
 
@@ -48,9 +48,11 @@ export default function ProfileForm({ context, history, location, setLocation })
 
 
     return (
-        <main>
+        <main style={{ height: '100dvh', overflow: 'scroll', paddingBottom: '100px' }}>
             <h2>환자 등록</h2>
-            <span>병원에 공유하기 위한 환자의 정보를 입력해주세요.</span>
+
+            <Spacer y={5} />
+            <span style={{ opacity: .7 }}>병원에 공유할 환자 정보를 다음 양식에 맞게 입력해주세요.</span>
             <Spacer y={30} />
 
             <div style={{ display: "flex", flexDirection: "column" }}>

@@ -5,6 +5,7 @@ import { useState } from "react";
 import ProfileForm from "./funnels/ProfileForm";
 import SymptomForm from "./funnels/SymptomForm";
 import HospitalForm from "./funnels/HospitalForm";
+import CompleteScreen from "./funnels/CompleteScreen";
 
 
 export default function Home() {
@@ -39,16 +40,7 @@ export default function Home() {
             )}
 
             매칭완료={({ context, history }) => (
-                <main>
-                    <h2>매칭 완료</h2>
-                    {JSON.stringify(context)}<br />
-                    {context.hospitalId}<br />
-                    {context.hospitalName}<br />
-                    {context.hospitalLat}  ,
-                    {context.hospitalLong}
-
-                    <button className="bottom" onClick={() => history.push("인적사항입력", {})}>이송 완료</button>
-                </main>
+                <CompleteScreen context={context} history={history} />
             )}
         />
     );

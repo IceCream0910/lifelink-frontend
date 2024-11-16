@@ -1,19 +1,50 @@
 "use client";
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import getHospital from '../../../utils/getHospital';
 import getRequests from '../../../utils/getRequests';
 import Spacer from '../../../components/spacer';
 import updateHospital from '../../../utils/updateHospital';
 import updateRequest from '../../../utils/updateRequest';
 import { supabase } from '../../../utils/supabase';
+import RequestCard from './components/requestCard';
+import IonIcon from '@reacticons/ionicons';
 
 export default function Page() {
     const { id } = useParams();
     const [hospital, setHospital] = useState(null);
     const [requests, setRequests] = useState([]);
+    const [scrollPosition, setScrollPosition] = useState(0);
+    const [showScrollButtons, setShowScrollButtons] = useState(false);
+    const cardsContainerRef = useRef(null);
 
     useEffect(() => {
+        const cardsContainer = cardsContainerRef.current;
+        if (cardsContainer) {
+            const hasHorizontalScrollbar =
+                cardsContainer.scrollWidth > cardsContainer.clientWidth;
+            setShowScrollButtons(hasHorizontalScrollbar);
+        }
+    }, [requests]);
+
+    const handleScrollLeft = () => {
+        cardsContainerRef.current.scrollBy({
+            left: -300,
+            behavior: 'smooth'
+        });
+        setScrollPosition(cardsContainerRef.current.scrollLeft);
+    };
+
+    const handleScrollRight = () => {
+        cardsContainerRef.current.scrollBy({
+            left: 300,
+            behavior: 'smooth'
+        });
+        setScrollPosition(cardsContainerRef.current.scrollLeft);
+    };
+
+    useEffect(() => {
+
         if (!id) return;
 
         /*
@@ -91,51 +122,105 @@ export default function Page() {
     if (!hospital) return <div>Loading...</div>;
 
     return (
-        <div>
-            <div>
-                <h1>{hospital.name}</h1>
-                <div>
-
-                    <h3>요청</h3>
+        <main style={{ overflow: 'hidden', padding: '2em' }}>
+            <h1>{hospital.name}</h1>
+            <Spacer y={20} />
+            <div style={{ width: '72%', height: '95dvh' }}>
+                <h3>이송 요청</h3> <Spacer y={15} />
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', height: '100%', overflow: 'scroll', paddingBottom: '500px' }}>
                     {requests && requests.filter((item) => item.status == 'pending').map((request, index) => (
-                        <div key={request.id} className="card">
-                            <p>{request.patient_data.age}세 {request.patient_data.gender}</p>
-                            <p>이름: {request.patient_data.name}</p>
-                            <p>{request.patient_data.category} ▷ {request.patient_data.subcategory} ▷ {request.patient_data.symptom} (Pre-KTAS: {request.patient_data.ktasCode})</p>
-                            <div className="button-group">
-                                <button onClick={() => accept(request)}>수락</button>
-                                <button onClick={() => deny(request)}>거부</button>
-                            </div>
-                        </div>
+                        <RequestCard key={request.id || index} request={request} onAccept={accept} onDeny={deny} />
                     ))}
+                    {requests && requests.filter((item) => item.status == 'pending').length === 0 && (
+                        <p style={{ color: 'var(--text-muted)' }}>이송 요청이 없습니다.</p>
+                    )}
+                </div>
+
+            </div>
+
+            <div style={{ position: 'fixed', top: 0, right: 0, background: 'var(--background)', width: '27%', padding: '2em', height: '100%' }}>
+                <h3>우리 병원으로 이송 중</h3><Spacer y={20} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', height: '100%', overflowY: 'scroll', paddingBottom: '50px' }}>
+                    {requests && requests.filter((item) => item.status == 'completed').map((request, index) => (
+                        <RequestCard key={request.id || index} request={request} />
+                    ))}
+                    {requests && requests.filter((item) => item.status == 'completed').length === 0 && (
+                        <p style={{ color: 'var(--text-muted)' }}>이송 중인 환자가 없습니다.</p>
+                    )}
                 </div>
             </div>
 
-            <Spacer />
 
-            <div>
-                <h3>선택 대기 중</h3>
-                {requests && requests.filter((item) => item.status == 'accepted').map((request, index) => (
-                    <div key={request.id} className="card">
-                        <p>{request.patient_data.age}세 {request.patient_data.gender}</p>
-                        <p>이름: {request.patient_data.name}</p>
-                        <p>{request.patient_data.category} ▷ {request.patient_data.subcategory} ▷ {request.patient_data.symptom} (Pre-KTAS: {request.patient_data.ktasCode})</p>
-                        <div className="button-group">
+
+
+
+            <div style={{ position: 'fixed', bottom: 0, left: 0, right: '28%', padding: '2em', background: 'linear-gradient(to bottom, transparent, var(--background) 30%)' }}>
+                <Spacer y={30} />
+                <h3>확정 대기 중</h3>
+                <Spacer y={15} />
+                <div
+                    ref={cardsContainerRef}
+                    style={{
+                        width: '100% !important',
+                        display: 'inline-display',
+                        whiteSpace: 'nowrap',
+                        overflowX: 'scroll',
+                    }}
+                >
+                    {requests && requests.filter((item) => item.status === 'accepted').map((request, index) => (
+                        <div key={request.id || index} style={{ display: 'inline-block', marginRight: '15px' }}>
+                            <RequestCard key={request.id || index} request={request} simplified={true} />
                         </div>
-                    </div>
-                ))}
+                    ))}
+                    {requests && requests.filter((item) => item.status === 'accepted').length === 0 && (
+                        <p style={{ color: 'var(--text-muted)' }}>확정 대기 중인 환자가 없습니다.</p>
+                    )}
+                </div>
+                {showScrollButtons && scrollPosition > 0 && (
+                    <button
+                        onClick={handleScrollLeft}
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '20px',
+                            transform: 'translateY(30%)',
+                            backgroundColor: 'white',
+                            color: '#000',
+                            borderRadius: '50%',
+                            width: '36px',
+                            height: '36px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                        }}
+                    >
+                        <IonIcon name="chevron-back" />
+                    </button>
+                )}
+                {showScrollButtons && (
+                    <button
+                        onClick={handleScrollRight}
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            right: '20px',
+                            transform: 'translateY(30%)',
+                            backgroundColor: 'white',
+                            color: '#000',
+                            borderRadius: '50%',
+                            width: '36px',
+                            height: '36px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                        }}
+                    >
+                        <IonIcon name="chevron-forward" />
+                    </button>
+                )}
             </div>
-
-            <div>
-                <h3>이송 중</h3>
-                {requests && requests.filter((item) => item.status == 'completed').map((request, index) => (
-                    <div key={request.id} className="card">
-                        <p>{request.patient_data.age}세 {request.patient_data.gender}</p>
-                        <p>이름: {request.patient_data.name}</p>
-                        <p>{request.patient_data.category} ▷ {request.patient_data.subcategory} ▷ {request.patient_data.symptom} (Pre-KTAS: {request.patient_data.ktasCode})</p>
-                    </div>
-                ))}
-            </div>
-        </div>
+        </main>
     );
 }

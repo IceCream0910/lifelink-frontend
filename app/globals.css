@@ -6,18 +6,20 @@
   --secondary: #fff;
   --primary: #63b597;
   --danger: #ff4d4d;
+  --blue: #008cff;
 }
 
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow: hidden;
+  -ms-overflow-style: none;
 }
 
 main {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100dvh;
   padding: 30px 20px;
 }
 
@@ -27,6 +29,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 * {
@@ -42,6 +48,11 @@ body {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition: all 0.3s cubic-bezier(0.1, 0.3, 0.6, 1.5);
+  word-break: keep-all;
+}
+
+#__react-kakao-maps-sdk___Map svg {
+  transition: none;
 }
 
 a {
@@ -64,6 +75,36 @@ input {
 }
 
 input:focus {
+  border: 1px solid var(--primary);
+}
+
+select {
+  width: 100%;
+  font-size: 1rem;
+  background-color: var(--background);
+  border: 1px solid var(--background);
+  padding: 10px;
+  border-radius: 10px;
+  outline: none;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+select:focus {
+  border: 1px solid var(--primary);
+}
+
+textarea {
+  font-size: 1rem;
+  background-color: var(--background);
+  border: 1px solid var(--background);
+  width: 100%;
+  resize: vertical;
+  padding: 10px;
+  border-radius: 10px;
+  outline: none;
+}
+
+textarea:focus {
   border: 1px solid var(--primary);
 }
 
@@ -98,6 +139,7 @@ button.disabled {
 }
 
 button.selector {
+  width: 100%;
   background: var(--secondary);
   color: var(--foreground);
   text-align: left;
@@ -141,7 +183,16 @@ button.option:active {
   border-radius: 15px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  margin-bottom: 20px;
+  max-height: 150px;
+}
+
+.card.clickable {
+  cursor: pointer;
+}
+
+.card.clickable:active {
+  background: #d4d4d4;
+  transform: scale(0.98);
 }
 
 .digit {
@@ -153,4 +204,79 @@ button.option:active {
   align-items: center;
   justify-content: center;
   font-size: 20px
+}
+
+.shimmer-text {
+  background: linear-gradient(to right, #9c9c9c, #3a3a3a, #6e6e6e, #7d7d7d);
+  background-size: 200% auto;
+  color: #000;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s linear infinite;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+@keyframes shine {
+  to {
+    background-position: -200% center;
+  }
+}
+
+.voice-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 25px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.transcript-container {
+  margin: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(var(--primary), 0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.97);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

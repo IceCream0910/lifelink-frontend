@@ -9,6 +9,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ko">
+      <head>
+        <script
+          type="text/javascript"
+          src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=290387249084e11854eeb81fc523681e"
+        ></script>
+      </head>
       <body>
         <Toaster />
         {children}

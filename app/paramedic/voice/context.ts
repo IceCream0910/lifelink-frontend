@@ -29,6 +29,17 @@ type preKtas = {
     severity: number;
 }
 
+type voiceForm = {
+    id: number;
+    name?: string;
+    age: number;
+    gender: string;
+    citizenship: string;
+    location?: string;
+    symptom: string;
+    ktasCode: string;
+}
+
 type finding = preKtas
 
 type complete = finding & {
@@ -36,6 +47,9 @@ type complete = finding & {
     hospitalName: string;
     hospitalLat: number;
     hospitalLong: number;
+    distance: number;
+    created_at: string;
+    request: any;
 }
 
-export type { profile, preKtas, finding, complete, KtasSymptom };
+export type { profile, preKtas, finding, complete, KtasSymptom, voiceForm };

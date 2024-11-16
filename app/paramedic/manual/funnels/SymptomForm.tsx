@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import Spacer from "../../components/spacer";
+import Spacer from "../../../components/spacer";
 import IonIcon from '@reacticons/ionicons';
 import toast from 'react-hot-toast';
 import { BottomSheet } from 'react-spring-bottom-sheet'
 import 'react-spring-bottom-sheet/dist/style.css'
 import ktasData from '../ktas.json';
 import { KtasSymptom, preKtas } from "../context";
-import addPatient from '../../utils/add';
-import sendRequests from '../../utils/sendRequests';
+import addPatient from '../../../utils/add';
+import sendRequests from '../../../utils/sendRequests';
 
 type SelectionState = {
     category: string;
@@ -85,10 +85,10 @@ export default function SymptomForm({ context, history, setHospitals, location, 
 
 
     return (
-        <main>
+        <main style={{ width: '100%', height: '100dvh', overflow: 'scroll', paddingBottom: '100px', display: 'block' }}>
             <h2>환자 상태 입력</h2>
-            <span>병원에 공유하기 위한 환자의 상태를 입력해주세요.</span>
-            <Spacer y={10} />
+            <Spacer y={5} />
+            <span style={{ opacity: .7 }}>병원에 공유할 환자 상태를 다음 양식에 맞게 입력해주세요.</span>            <Spacer y={10} />
             <span style={{ opacity: .5, fontSize: '14px' }}>
                 <IonIcon className="icon" name="alert-circle-outline" />&nbsp;환자 상태를 단계 별로 선택하면 Pre-KTAS 코드가 자동으로 분류됩니다. 음성으로 환자 상태를 입력한 경우 KTAS 코드 대신 브리핑 내용 및 요약본이 전달됩니다.
             </span>

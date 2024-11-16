@@ -12,6 +12,6 @@ export default async function updateRequest(data: Request) {
     if (!response.ok) {
         throw new Error('Failed to update request');
     } else {
-        return response.json();
+        return true;
     }
 }
