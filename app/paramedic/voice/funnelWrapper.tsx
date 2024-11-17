@@ -9,7 +9,7 @@ import CompleteScreen from "./funnels/CompleteScreen";
 
 export default function Home() {
     const [hospitals, setHospitals] = useState<any>([]);
-    const [location, setLocation] = useState<string | null>(null);
+    const [location, setLocation] = useState<string | null>(localStorage.getItem('lifelink_patient_location'));
 
     const funnel = useFunnel<{
         "음성입력": Partial<voiceForm>;
@@ -26,7 +26,7 @@ export default function Home() {
     return (
         <funnel.Render
             음성입력={({ context, history }) => (
-                <VoiceForm context={context} history={history} location={location} setLocation={setLocation} />
+                <VoiceForm context={context} history={history} location={location} />
             )}
 
             요청전송={({ context, history }) => (

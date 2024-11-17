@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Spacer from "../../components/spacer";
 import IonIcon from "@reacticons/ionicons";
@@ -6,6 +7,36 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
     const router = useRouter();
+    const [location, setLocation] = useState<string | null>(null);
+
+    useEffect(() => {
+        getCurrentLocation();
+    }, []);
+
+    const getCurrentLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    const locationString = `POINT(${longitude} ${latitude})`;
+                    console.log('Location:', locationString);
+                    setLocation(locationString);
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                }
+            );
+        } else {
+            console.error('Geolocation is not supported by this browser.');
+        }
+    };
+
+    useEffect(() => {
+        if (location) {
+            localStorage.setItem('lifelink_patient_location', location);
+        }
+    }, [location]);
+
     return (
         <main>
             <h2>환자 등록</h2>

@@ -15,7 +15,7 @@ type SelectionState = {
     symptom: KtasSymptom | null;
 };
 
-export default function SymptomForm({ context, history, setHospitals, location, setLocation }) {
+export default function SymptomForm({ context, history, setHospitals }) {
     const [patientId, setPatientId] = useState<number | null>(null);
 
     const [selection, setSelection] = useState<SelectionState>({
@@ -25,6 +25,10 @@ export default function SymptomForm({ context, history, setHospitals, location, 
     });
 
     const [openSheet, setOpenSheet] = useState<'category' | 'subcategory' | 'symptom' | null>(null);
+
+    useEffect(() => {
+        setOpenSheet('category');
+    }, []);
 
     // KTAS 코드 생성
     const generateKtasCode = (context: Partial<preKtas>, symptom: KtasSymptom | null) => {
@@ -57,31 +61,6 @@ export default function SymptomForm({ context, history, setHospitals, location, 
         setPatientId(newId);
         return newId;
     };
-
-
-    const getCurrentLocation = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    const locationString = `POINT(${longitude} ${latitude})`;
-                    console.log('Location:', locationString);
-                    setLocation(locationString);
-                },
-                (error) => {
-                    console.error('Error getting location:', error);
-                }
-            );
-        } else {
-            console.error('Geolocation is not supported by this browser.');
-        }
-    };
-
-    useEffect(() => {
-        if (location) {
-            context.location = location
-        }
-    }, [location]);
 
 
     return (
@@ -131,79 +110,77 @@ export default function SymptomForm({ context, history, setHospitals, location, 
             <Spacer y={70} />
 
             <BottomSheet
-                open={openSheet === 'category'}
+                open={openSheet != null}
                 onDismiss={() => setOpenSheet(null)}
             >
                 <div style={{ padding: '20px', maxHeight: '80dvh', overflowY: 'scroll' }}>
-                    {getCategories(context.age).map(category => (
-                        <button
-                            className="option"
-                            key={category}
-                            onClick={() => {
-                                setSelection({ category, subcategory: '', symptom: null });
-                                setOpenSheet('subcategory')
-                            }}
-                            style={{ display: 'block', width: '100%', padding: '10px', margin: '5px 0' }}
-                        >
-                            {category}
-                        </button>
-                    ))}
-                </div>
-            </BottomSheet>
 
-            <BottomSheet
-                open={openSheet === 'subcategory'}
-                onDismiss={() => setOpenSheet(null)}
-            >
-                <div style={{ padding: '20px', maxHeight: '80dvh', overflowY: 'scroll' }}>
-                    {getSubcategories(context.age).map(subcategory => (
-                        <button
-                            className="option"
-                            key={subcategory}
-                            onClick={() => {
-                                setSelection(prev => ({ ...prev, subcategory, symptom: null }));
-                                setOpenSheet('symptom');
-                            }}
-                            style={{ display: 'block', width: '100%', padding: '10px', margin: '5px 0' }}
-                        >
-                            {subcategory}
-                        </button>
-                    ))}
-                </div>
-            </BottomSheet>
+                    {openSheet == 'category' &&
+                        <>
+                            {getCategories(context.age).map(category => (
+                                <button
+                                    className="option"
+                                    key={category}
+                                    onClick={() => {
+                                        setSelection({ category, subcategory: '', symptom: null });
+                                        setOpenSheet('subcategory')
+                                    }}
+                                    style={{ display: 'block', width: '100%', padding: '10px', margin: '5px 0' }}
+                                >
+                                    {category}
+                                </button>
+                            ))}</>
+                    }
 
-            <BottomSheet
-                open={openSheet === 'symptom'}
-                onDismiss={() => setOpenSheet(null)}
-            >
-                <div style={{ padding: '20px', maxHeight: '80dvh', overflowY: 'scroll' }}>
-                    {getSymptoms(context.age).map(symptom => (
-                        <button
-                            className="option"
-                            key={symptom.code}
-                            onClick={() => {
-                                setSelection(prev => ({ ...prev, symptom }));
-                                setOpenSheet(null);
-                                if (context.age && context.gender && context.citizenship) {
-                                    const ktasCode = generateKtasCode(context, symptom);
-                                    history.replace("증상입력", {
-                                        ...context,
-                                        ktasCode,
-                                        category: selection.category,
-                                        subcategory: selection.subcategory,
-                                        symptom: symptom.name,
-                                        severity: symptom.severity,
-                                        age: context.age,
-                                        gender: context.gender,
-                                        citizenship: context.citizenship
-                                    });
-                                }
-                            }}
-                            style={{ display: 'block', width: '100%', padding: '10px', margin: '5px 0' }}
-                        >
-                            {symptom.name}
-                        </button>
-                    ))}
+                    {openSheet == 'subcategory' &&
+                        <>
+                            {getSubcategories(context.age).map(subcategory => (
+                                <button
+                                    className="option"
+                                    key={subcategory}
+                                    onClick={() => {
+                                        setSelection(prev => ({ ...prev, subcategory, symptom: null }));
+                                        setOpenSheet('symptom');
+                                    }}
+                                    style={{ display: 'block', width: '100%', padding: '10px', margin: '5px 0' }}
+                                >
+                                    {subcategory}
+                                </button>
+                            ))}
+                        </>}
+
+                    {openSheet == 'symptom' &&
+                        <>
+                            {getSymptoms(context.age).map(symptom => (
+                                <button
+                                    className="option"
+                                    key={symptom.code}
+                                    onClick={() => {
+                                        setSelection(prev => ({ ...prev, symptom }));
+                                        setOpenSheet(null);
+                                        if (context.age && context.gender && context.citizenship) {
+                                            const ktasCode = generateKtasCode(context, symptom);
+                                            history.replace("증상입력", {
+                                                ...context,
+                                                ktasCode,
+                                                category: selection.category,
+                                                subcategory: selection.subcategory,
+                                                symptom: symptom.name,
+                                                severity: symptom.severity,
+                                                age: context.age,
+                                                gender: context.gender,
+                                                citizenship: context.citizenship
+                                            });
+                                        }
+                                    }}
+                                    style={{ display: 'block', width: '100%', padding: '10px', margin: '5px 0' }}
+                                >
+                                    {symptom.name}
+                                </button>
+                            ))}
+                        </>
+                    }
+
                 </div>
             </BottomSheet>
 
@@ -212,8 +189,7 @@ export default function SymptomForm({ context, history, setHospitals, location, 
                 onClick={async () => {
                     if (selection.symptom && context.age && context.gender && context.citizenship) {
                         if (!context.location) {
-                            toast.error("아직 현재 위치 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
-                            getCurrentLocation();
+                            toast.error("현재 위치 정보를 불러오지 못했습니다. 다시 시도해주세요.");
                             return;
                         }
                         if (!context.id) {

@@ -3,7 +3,7 @@ import Spacer from "../../../components/spacer";
 import IonIcon from '@reacticons/ionicons';
 import toast from 'react-hot-toast';
 
-export default function ProfileForm({ context, history, location, setLocation }) {
+export default function ProfileForm({ context, history, location }) {
     const [patientId, setPatientId] = useState<number | null>(null);
     const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -21,28 +21,9 @@ export default function ProfileForm({ context, history, location, setLocation })
         return newId;
     };
 
-
-    const getCurrentLocation = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    const locationString = `POINT(${longitude} ${latitude})`;
-                    console.log('Location:', locationString);
-                    setLocation(locationString);
-                },
-                (error) => {
-                    console.error('Error getting location:', error);
-                }
-            );
-        } else {
-            console.error('Geolocation is not supported by this browser.');
-        }
-    };
-
     useEffect(() => {
         if (location) {
-            context.location = location
+            history.replace("인적사항입력", { ...context, location });
         }
     }, [location]);
 
@@ -117,7 +98,6 @@ export default function ProfileForm({ context, history, location, setLocation })
                     if (context.age && context.gender && context.citizenship) { // 필수값
                         const id = patientId || generatePatientId();
                         history.push("증상입력", { ...context, id });
-                        getCurrentLocation();
                     } else {
                         toast.error("필수 항목을 모두 입력해주세요.");
                     }

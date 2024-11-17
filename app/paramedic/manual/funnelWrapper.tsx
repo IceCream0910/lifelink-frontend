@@ -10,7 +10,7 @@ import CompleteScreen from "./funnels/CompleteScreen";
 
 export default function Home() {
     const [hospitals, setHospitals] = useState<any>([]);
-    const [location, setLocation] = useState<string | null>(null);
+    const [location, setLocation] = useState<string | null>(localStorage.getItem('lifelink_patient_location'));
 
     const funnel = useFunnel<{
         "인적사항입력": Partial<profile>;
@@ -28,11 +28,11 @@ export default function Home() {
     return (
         <funnel.Render
             인적사항입력={({ context, history }) => (
-                <ProfileForm context={context} history={history} location={location} setLocation={setLocation} />
+                <ProfileForm context={context} history={history} location={location} />
             )}
 
             증상입력={({ context, history }) => (
-                <SymptomForm context={context} history={history} setHospitals={setHospitals} location={location} setLocation={setLocation} />
+                <SymptomForm context={context} history={history} setHospitals={setHospitals} />
             )}
 
             요청전송={({ context, history }) => (

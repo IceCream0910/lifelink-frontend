@@ -12,8 +12,7 @@ import sendRequests from '../../../utils/sendRequests';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css';
 
-export default function VoiceForm({ context, history, location, setLocation }) {
-    const [isLocationLoaded, setIsLocationLoaded] = useState(false);
+export default function VoiceForm({ context, history, location }) {
     const [patientId, setPatientId] = useState<number | null>(null);
     const [isRecording, setIsRecording] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -37,34 +36,7 @@ export default function VoiceForm({ context, history, location, setLocation }) {
     };
 
     useEffect(() => {
-        const initializeLocation = () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const { latitude, longitude } = position.coords;
-                        const locationString = `POINT(${longitude} ${latitude})`;
-                        setLocation(locationString);
-                        setIsLocationLoaded(true);
-                    },
-                    (error) => {
-                        console.error('Error getting location:', error);
-                        toast.error('위치 정보를 가져오는데 실패했습니다.');
-                        setIsLocationLoaded(false);
-                    }
-                );
-            } else {
-                console.error('Geolocation is not supported by this browser.');
-                toast.error('이 브라우저는 위치 정보를 지원하지 않습니다.');
-                setIsLocationLoaded(false);
-            }
-        };
-
-        initializeLocation();
-    }, []);
-
-    useEffect(() => {
         if (location) {
-            console.log('Location:', location);
             history.replace("음성입력", { ...context, location });
         }
     }, [location]);
@@ -135,23 +107,17 @@ export default function VoiceForm({ context, history, location, setLocation }) {
         if (audioContextRef.current) {
             audioContextRef.current.close();
         }
+
+
         setIsRecording(false);
+        if (!transcript) {
+            toast.error('인식된 내용이 없습니다. 다시 시도해주세요.');
+            return;
+        }
+
         setIsLoading(true);
 
         try {
-            if (!isLocationLoaded) {
-                toast.loading('위치 정보를 불러오는 중입니다...');
-                await new Promise((resolve) => {
-                    const checkLocation = setInterval(() => {
-                        if (isLocationLoaded) {
-                            clearInterval(checkLocation);
-                            resolve(true);
-                        }
-                    }, 100);
-                });
-                toast.dismiss();
-            }
-
             const result = await sendToLLM(transcript);
             const id = patientId || generatePatientId();
 
@@ -180,7 +146,7 @@ export default function VoiceForm({ context, history, location, setLocation }) {
     const handleConfirm = async () => {
         try {
             if (!processedResult) return;
-
+            console.log(context)
             context = processedResult;
             await addPatient(context);
             await sendRequests(context);
