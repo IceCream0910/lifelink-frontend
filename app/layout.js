@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
       <head>
         <script
           type="text/javascript"
-          src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=290387249084e11854eeb81fc523681e"
+          src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=290387249084e11854eeb81fc523681e&libraries=services"
         ></script>
       </head>
       <body>
