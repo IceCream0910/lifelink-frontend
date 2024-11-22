@@ -29,7 +29,7 @@ export default function SymptomForm({ context, history, setHospitals }) {
 
     useEffect(() => {
 
-        if (!/ios/i.test(navigator.userAgent)) {
+        if (!/iPhone/i.test(navigator.userAgent)) {
             setOpenSheet('category');
         }
 
