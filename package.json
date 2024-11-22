@@ -14,6 +14,7 @@
     "@supabase/supabase-js": "^2.46.1",
     "@use-funnel/browser": "^0.0.7",
     "@use-funnel/next": "^0.0.8",
+    "body-scroll-lock": "^4.0.0-beta.0",
     "framer-motion": "^11.11.17",
     "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 import Spacer from "../../../components/spacer";
 import IonIcon from '@reacticons/ionicons';
 import toast from 'react-hot-toast';
@@ -23,12 +24,29 @@ export default function SymptomForm({ context, history, setHospitals }) {
         subcategory: '',
         symptom: null
     });
-
     const [openSheet, setOpenSheet] = useState<'category' | 'subcategory' | 'symptom' | null>(null);
+    const bottomSheetRef = useRef(null);
 
     useEffect(() => {
         setOpenSheet('category');
+
+
+        return () => {
+            clearAllBodyScrollLocks();
+        };
     }, []);
+
+    useEffect(() => {
+        if (openSheet !== null && bottomSheetRef.current) {
+            disableBodyScroll(bottomSheetRef.current);
+        } else if (bottomSheetRef.current) {
+            enableBodyScroll(bottomSheetRef.current);
+        }
+    }, [openSheet]);
+
+    const handleSheetDismiss = () => {
+        setOpenSheet(null);
+    };
 
     // KTAS 코드 생성
     const generateKtasCode = (context: Partial<preKtas>, symptom: KtasSymptom | null) => {
@@ -111,9 +129,17 @@ export default function SymptomForm({ context, history, setHospitals }) {
 
             <BottomSheet
                 open={openSheet != null}
-                onDismiss={() => setOpenSheet(null)}
+                onDismiss={handleSheetDismiss}
             >
-                <div style={{ padding: '20px', maxHeight: '80dvh', overflowY: 'scroll' }}>
+                <div
+                    ref={bottomSheetRef}
+                    style={{
+                        padding: '20px',
+                        maxHeight: '80dvh',
+                        overflowY: 'auto',
+                        WebkitOverflowScrolling: 'touch'
+                    }}
+                >
 
                     {openSheet == 'category' &&
                         <>

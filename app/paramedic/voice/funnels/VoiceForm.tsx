@@ -171,6 +171,13 @@ export default function VoiceForm({ context, history, location }) {
                 <TextTransition text={transcript} />
             )}
 
+            {!transcript && (
+                <p style={{ opacity: .5 }}><b>이렇게 말해보세요.</b>
+                    <br />
+                    20대 여성 내국인 환자로, 발열 및 호흡곤란 증상이 있습니다. 이름은 홍길동입니다.
+                </p>
+            )}
+
             {isLoading && (
                 <div className="loading-container">
                     <div className="spinner" />
