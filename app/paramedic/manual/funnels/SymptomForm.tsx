@@ -28,11 +28,7 @@ export default function SymptomForm({ context, history, setHospitals }) {
     const bottomSheetRef = useRef(null);
 
     useEffect(() => {
-
-        if (!/iPhone/i.test(navigator.userAgent)) {
-            setOpenSheet('category');
-        }
-
+        setOpenSheet('category');
 
         return () => {
             clearAllBodyScrollLocks();
@@ -133,6 +129,7 @@ export default function SymptomForm({ context, history, setHospitals }) {
             <BottomSheet
                 open={openSheet != null}
                 onDismiss={handleSheetDismiss}
+                data-body-scroll-lock-ignore="true"
             >
                 <div
                     ref={bottomSheetRef}

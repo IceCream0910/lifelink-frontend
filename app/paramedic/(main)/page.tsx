@@ -82,6 +82,7 @@ export default function Home() {
                         <IonIcon className="icon" style={{ float: 'right' }} name="chevron-forward" />
                     </h3>
                     <Spacer y={5} />
+
                     <p style={{ opacity: .7, fontSize: '14px' }}>환자의 정보를 음성으로 입력합니다.<br />빠르게 환자를 등록할 수 있지만, Pre-KTAS 코드 전체가 아닌 중증도 분류만 자동 진행됩니다.</p>
                 </div>
                 <Spacer y={20} />
