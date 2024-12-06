@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lifelink: 응급 환자 이송 병원 매칭 시스템
 
-## Getting Started
+![image](https://i.imgur.com/bjUxWvj.png)
+> 광운대학교 인공지능융합학부 2024학년도 2학기 공학설계입문 작품전시회에서 우수상을 수상한 작품입니다.
 
-First, run the development server:
+## 개발 동기
+최근 이른바 '응급실 뺑뺑이' 현상으로 인한 사망자 증가와 응급 환자의 적시 치료 실패 사례가 언론을 통해 보도되면서 심각한 사회적 문제로 대두되고 있다.
+이는 특히 최근 전공의 집단행동과 함께 급증하고 있지만, 대규모 감염병 유행 사태  당시 하루 평균 12.9명 꼴로 재이송 사례가 발생한 것과 같이 비단 일시적인 문제는 아니다.
+일부 지자체를 시작으로 병원 자동 매칭 시스템 등을 도입하고 있으나, 환자 상태를 정확하게 전달하지 못하거나 오히려 구급대원의 업무를 가중시키는 등의 또다른 문제가 나타나고 있다.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 기술 스택
+- Frontend: Next.js
+- Backend: Nest.js, Supabase(PostgreSQL), postGIS
+- API: Kakao MAP SDK, Google Gemini
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 주요 구현 기능
+- [x] 환자 증상 상태 입력을 통한 KTAS 코드 자동 산출
+- [x] 음성인식(STT)와 LLM을 사용해 음성 브리핑으로 환자 등록
+- [x] 인근 병원에 요청 전송 및 수락/거절 여부 피드백
+- [x] 구급대원 측에서 최종 이송 병원 확정 가능
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 프로젝트 구조 및 흐름도
+![image](https://i.imgur.com/7ROtULa.png)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 담당 역할(팀장 / 총 2인)
+- UI/UX 디자인
+- 프론트엔드, 백엔드 개발
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 라이센스
+이 프로젝트는 MIT 라이센스를 따릅니다. 자유롭게 사용, 수정, 배포하실 수 있습니다.
